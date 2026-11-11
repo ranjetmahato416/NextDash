@@ -2,7 +2,7 @@
 import type { User, Post, Todo } from "./types";
 
 const API_BASE_URL =
-  "https://jsonplaceholder.typicode.com";
+  process.env.NEXT_PUBLIC_API_URL;
 
 async function apiFetch<T>(endpoint: string): Promise<T> {
   const response = await fetch(
