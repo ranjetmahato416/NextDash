@@ -1,5 +1,6 @@
 
 import Sidebar from "@/components/sidebar";
+import { Suspense } from "react";
 
 export default function DashboardLayout({
   children,
@@ -8,7 +9,9 @@ export default function DashboardLayout({
 }) {
   return (
     <div className="min-h-screen">
-      <Sidebar />
+      <Suspense fallback={<aside className="w-64 border-r bg-white" />}>
+        <Sidebar />
+      </Suspense>
 
       <main className="min-h-screen pl-64">
         <header className="sticky top-0 z-10 flex h-16 items-center justify-between border-b border-slate-200 bg-white px-8">
