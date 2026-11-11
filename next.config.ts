@@ -13,5 +13,17 @@ const nextConfig: NextConfig = {
     },
   },
 };
+// next.config.js
+module.exports = {
+  async redirects() {
+    return [
+      {
+        source: '/',
+        destination: '/dashboard',
+        permanent: false, // 307 temporary redirect; change to true for 308
+      },
+    ]
+  },
+}
 
 export default nextConfig;
