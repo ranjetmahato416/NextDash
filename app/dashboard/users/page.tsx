@@ -13,7 +13,7 @@ export default async function UsersPage() {
         </h1>
 
         <p className="mt-1 text-sm text-slate-500">
-          Browse and search all Registered Users.
+          Browse and Search All Registered Users.
         </p>
       </div>
 
