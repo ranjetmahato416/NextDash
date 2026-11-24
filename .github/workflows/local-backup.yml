@@ -23,14 +23,14 @@ jobs:
 
     steps:
       - name: Verify backup directory
-        shell: powershell
+        shell: powershell -ExecutionPolicy Bypass
         run: |
           if (!(Test-Path "C:\GitBackups\Nextdash.git")) {
             throw "Backup repository not found!"
           }
 
       - name: Synchronize GitHub repository
-        shell: powershell
+        shell: powershell -ExecutionPolicy Bypass
         run: |
           git --git-dir="C:\GitBackups\Nextdash.git" remote update --prune
 
@@ -39,7 +39,7 @@ jobs:
           }
 
       - name: Verify backup branches
-        shell: powershell
+        shell: powershell -ExecutionPolicy Bypass
         run: |
           git --git-dir="C:\GitBackups\Nextdash.git" branch -a
 
