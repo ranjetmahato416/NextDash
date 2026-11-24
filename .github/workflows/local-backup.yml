@@ -21,16 +21,20 @@ jobs:
       - X64
       - nextdash-backup
 
+    defaults:
+      run:
+        shell: powershell
+
     steps:
       - name: Verify backup directory
-        shell: powershell -ExecutionPolicy Bypass
         run: |
           if (!(Test-Path "C:\GitBackups\Nextdash.git")) {
             throw "Backup repository not found!"
           }
 
+          Write-Output "Backup directory exists."
+
       - name: Synchronize GitHub repository
-        shell: powershell -ExecutionPolicy Bypass
         run: |
           git --git-dir="C:\GitBackups\Nextdash.git" remote update --prune
 
@@ -38,9 +42,14 @@ jobs:
             throw "Backup synchronization failed!"
           }
 
+          Write-Output "Repository synchronized successfully."
+
       - name: Verify backup branches
-        shell: powershell -ExecutionPolicy Bypass
         run: |
           git --git-dir="C:\GitBackups\Nextdash.git" branch -a
+
+          if ($LASTEXITCODE -ne 0) {
+            throw "Unable to verify backup branches!"
+          }
 
           Write-Output "Backup completed successfully!"
