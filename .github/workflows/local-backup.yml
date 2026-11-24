@@ -1,22 +1,58 @@
-- name: Verify backup directory
-  shell: powershell
-  run: |
-    git --git-dir="C:\GitBackups\Nextdash.git" rev-parse --is-bare-repository
 
-    if ($LASTEXITCODE -ne 0) {
-      throw "Invalid bare Git repository!"
-    }
+name: Nextdash Local Backup
 
-- name: Synchronize GitHub repository
-  shell: powershell
-  run: |
-    git --git-dir="C:\GitBackups\Nextdash.git" remote update --prune
+on:
+  push:
+    branches:
+      - main
 
-    if ($LASTEXITCODE -ne 0) {
-      throw "Backup synchronization failed!"
-    }
+  workflow_dispatch:
 
-- name: Verify backup branches
-  shell: powershell
-  run: |
-    git --git-dir="C:\GitBackups\Nextdash.git" branch -r
+permissions:
+  contents: read
+
+jobs:
+  backup:
+    name: Synchronize Local Repository
+
+    runs-on: [self-hosted, Windows, X64, nextdash-backup]
+
+    steps:
+      - name: Verify backup directory
+        shell: powershell
+        run: |
+          $backup = "C:\GitBackups\Nextdash.git"
+
+          if (!(Test-Path "$backup\HEAD")) {
+            throw "Backup repository is missing or invalid!"
+          }
+
+          git --git-dir="$backup" rev-parse --is-bare-repository
+
+          if ($LASTEXITCODE -ne 0) {
+            throw "Invalid bare Git repository!"
+          }
+
+      - name: Synchronize GitHub repository
+        shell: powershell
+        run: |
+          $backup = "C:\GitBackups\Nextdash.git"
+
+          git --git-dir="$backup" remote update --prune
+
+          if ($LASTEXITCODE -ne 0) {
+            throw "Backup synchronization failed!"
+          }
+
+      - name: Verify backup branches
+        shell: powershell
+        run: |
+          $backup = "C:\GitBackups\Nextdash.git"
+
+          git --git-dir="$backup" branch -r
+
+          if ($LASTEXITCODE -ne 0) {
+            throw "Unable to verify backup branches!"
+          }
+
+          Write-Output "Backup completed successfully!"
